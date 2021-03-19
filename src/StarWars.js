@@ -32,8 +32,6 @@ function exibirCarregando (tipoTag){
 }
 function removerCarregando (){
     const elementos = Array.isArray(document.getElementsByClassName("jsCarregando"));
-
-    console.log(elementos)
     for (let i = 0; i < elementos.length; i++) {
         array[i].remove();
     }
@@ -65,8 +63,6 @@ function removerCarregando (){
             const {count, results} = response;
             
             totalDe = count;
-            console.log("response", response)
-            
             arrayExistente = results;
         }
 
@@ -78,7 +74,7 @@ function removerCarregando (){
         rowInit.classList.add('row', 'mx-auto')
 
         const titulo = document.createElement('h1');
-        titulo.classList.add('text-center','text-sucess');
+        titulo.classList.add('text-center','text-success');
         titulo.innerHTML = "Star Wars API JS"
         rowInit.append(titulo);
         container.append(rowInit);
@@ -90,14 +86,14 @@ function removerCarregando (){
         const thead = document.createElement('thead');
         thead.innerHTML = 
         `<tr>
-            <th scope="col">#</th>
+            <th scope="col">Editar</th>
             <th scope="col">Nome</th>
             <th scope="col">Genero</th>
             <th scope="col">Olhos</th>
             <th scope="col">Pele</th>
             <th scope="col">Cabelo</th>
             <th scope="col">Altura (cm) </th>
-            <th scope="col">#</th>
+            <th scope="col">Excluir</th>
         </tr>`;
 
         table.append(thead);
@@ -107,7 +103,6 @@ function removerCarregando (){
         ulElement.setAttribute('id', 'lista');
         ulElement.classList.add('list-group');
 
-        console.log(arrayExistente)
         for (let index = 0; index < arrayExistente.length; index++) {
             arrayExistente[index] = {
                 id: index + 1,
@@ -120,13 +115,13 @@ function removerCarregando (){
             
             const thEditar = document.createElement('th');
             thEditar.setAttribute('scope','row');
+            thEditar.classList.add('pl-5','pr-5', 'text-center');
             const aEditar = document.createElement('a');
             aEditar.setAttribute('href', '#');
             aEditar.classList.add('text-warning');
             aEditar.addEventListener('click', function (event) {
-                console.log('editar')
                 event.preventDefault()
-                alert('criar formEditar ' + element.id)
+                editarPersonagem(arrayExistente, paginaAtual, totalDe, element.id)
               })
             const iEditar = document.createElement('i');
             iEditar.classList.add('bi', 'bi-pencil');
@@ -147,35 +142,38 @@ function removerCarregando (){
 
             const olhos = document.createElement('td');
             olhos.setAttribute('scope', 'col');
+            olhos.classList.add('pl-5','pr-5', 'text-center');
             olhos.innerHTML = `${element.eye_color}`;
             trElement.append(olhos);
 
             const pele = document.createElement('td');
             pele.setAttribute('scope', 'col');
+            pele.classList.add('pl-5','pr-5', 'text-center');
             pele.innerHTML = `${element.skin_color}`;
             trElement.append(pele);
             
             const cabelo = document.createElement('td');
             cabelo.setAttribute('scope', 'col');
+            cabelo.classList.add('pl-5','pr-5', 'text-center');
             cabelo.innerHTML = `${element.hair_color}`;
             trElement.append(cabelo);
             
             const altura = document.createElement('td');
             altura.setAttribute('scope', 'col');
+            altura.classList.add('pl-5','pr-5', 'text-center');
             altura.innerHTML =`${element.height}`;
             trElement.append(altura);
 
             const thDeletar = document.createElement('th');
             thDeletar.setAttribute('scope','row');
+            thDeletar.classList.add('pl-5','pr-5', 'text-center');
+
 
             const aDeletar = document.createElement('a');
             aDeletar.setAttribute('href', '#');
             aDeletar.classList.add('text-danger');
             aDeletar.addEventListener('click', function (event) {
                 event.preventDefault()
-
-                alert('criar formEditar ' + element.id)
-
                 apagarConteudoElemento(aplicacao);
                 CarregarPagina( arrayExistente.filter((item) => item !== element), paginaAtual, totalDe);
 
@@ -194,6 +192,7 @@ function removerCarregando (){
 
         
         function criarPaginacao(totalDe, numberOfPage){
+            
             const navElement = document.createElement('nav');
             navElement.setAttribute('aria-label','Paginas')
             const ulElement = document.createElement('ul');
@@ -222,6 +221,188 @@ function removerCarregando (){
             return navElement;
         }
 
+        function editarPersonagem(arrayExistente, paginaAtual, totalDe, id){
+            apagarConteudoElemento(aplicacao);
+
+            const element = arrayExistente.filter(personagem => personagem.id === id)[0];
+            
+            const container = document.createElement("div");
+            container.setAttribute('id', 'container');
+            container.classList.add("container", "mx-auto");
+            
+            const rowInit = document.createElement('div');
+            rowInit.classList.add('row', 'mx-auto')
+    
+            const titulo = document.createElement('h1');
+            titulo.classList.add('text-center','text-success');
+            titulo.innerHTML = `Editando ${element.name}`
+            rowInit.append(titulo);
+            container.append(rowInit); 
+
+            const form = document.createElement('form');
+
+
+
+            const nomeLinha = document.createElement('div');
+            nomeLinha.classList.add("input-group", "mb-3");
+            
+            const nomeLabel = document.createElement('span');
+            nomeLabel.setAttribute('id', 'nomeLabel');
+            nomeLabel.classList.add('input-group-text');
+            nomeLabel.innerHTML = "Nome";
+            nomeLinha.append(nomeLabel);
+
+            const nomeInput = document.createElement('input');
+            nomeInput.setAttribute('id', 'nome');
+            nomeInput.setAttribute('type', 'text');
+            nomeInput.classList.add('form-control');
+            nomeInput.setAttribute('aria-describedby', 'nomeLabel');
+            nomeInput.setAttribute('value', `${element.name}`);
+            nomeLinha.append(nomeInput);
+            form.append(nomeLinha);
+
+
+            const generoLinha = document.createElement('div');
+            generoLinha.classList.add("input-group", "mb-3");
+
+            const generoLabel = document.createElement('span');
+            generoLabel.setAttribute('id', 'generolabel');
+            generoLabel.classList.add('input-group-text');
+            generoLabel.innerHTML = "Genero";
+            generoLinha.append(generoLabel);
+
+            const generoInput = document.createElement('input');
+            generoInput.setAttribute('id', 'genero');
+            generoInput.setAttribute('type', 'text');
+            generoInput.classList.add('form-control');
+            generoInput.setAttribute('aria-describedby', 'generoLabel');
+            generoInput.setAttribute('value', `${element.gender}`);
+            generoLinha.append(generoInput);
+            form.append(generoLinha);
+
+
+            
+            const olhosLinha = document.createElement('div');
+            olhosLinha.classList.add("input-group", "mb-3");
+
+            const olhosLabel = document.createElement('span');
+            olhosLabel.setAttribute('id', 'olhosLabel');
+            olhosLabel.classList.add('input-group-text');
+            olhosLabel.innerHTML = "Olhos";
+            olhosLinha.append(olhosLabel);
+
+            const olhosInput = document.createElement('input');
+            olhosInput.setAttribute('id', 'olhos');
+            olhosInput.setAttribute('type', 'text');
+            olhosInput.classList.add('form-control');
+            olhosInput.setAttribute('aria-describedby', 'olhosLabel');
+            olhosInput.setAttribute('value',`${element.eye_color}`);
+            olhosLinha.append(olhosInput);
+            form.append(olhosLinha);
+
+
+            const peleLinha = document.createElement('div');
+            peleLinha.classList.add("input-group", "mb-3");
+
+            const peleLabel = document.createElement('span');
+            peleLabel.setAttribute('id', 'peleLabel');
+            peleLabel.classList.add('input-group-text');
+            peleLabel.innerHTML = "Pele";
+            peleLinha.append(peleLabel);
+
+            const peleInput = document.createElement('input');
+            peleInput.setAttribute('id', 'pele');
+            peleInput.setAttribute('type', 'text');
+            peleInput.classList.add('form-control');
+            generoInput.setAttribute('aria-describedby', 'peleLabel');
+            peleInput.setAttribute('value',`${element.skin_color}`);
+            peleLinha.append(peleInput);
+            form.append(peleLinha);
+
+
+            const cabeloLinha = document.createElement('div');
+            cabeloLinha.classList.add("input-group", "mb-3");
+
+            const cabeloLabel = document.createElement('span');
+            cabeloLabel.setAttribute('id', 'cabeloLabel');
+            cabeloLabel.classList.add('input-group-text');
+            cabeloLabel.innerHTML = "Cabelo";
+            cabeloLinha.append(cabeloLabel);
+
+            const cabeloInput = document.createElement('input');
+            cabeloInput.setAttribute('id', 'cabelo');
+            cabeloInput.setAttribute('type', 'text');
+            cabeloInput.classList.add('form-control');
+            cabeloInput.setAttribute('aria-describedby', 'cabeloLabel');
+            cabeloInput.setAttribute('value',`${element.hair_color}`);
+            cabeloLinha.append(cabeloInput);
+            form.append(cabeloLinha);
+            
+            const alturaLinha = document.createElement('div');
+            alturaLinha.classList.add("input-group", "mb-3");
+
+            const alturaLabel = document.createElement('span');
+            alturaLabel.setAttribute('id', 'alturaLabel');
+            alturaLabel.classList.add('input-group-text');
+            alturaLabel.innerHTML = "Altura";
+            alturaLinha.append(alturaLabel);
+
+            const alturaInput = document.createElement('input');
+            alturaInput.setAttribute('id', 'altura');
+            alturaInput.setAttribute('type', 'text');
+            alturaInput.classList.add('form-control');
+            alturaInput.setAttribute('aria-describedby', 'alturaLabel');
+            alturaInput.setAttribute('value',`${element.height}`);
+            alturaLinha.append(alturaInput);
+            form.append(alturaLinha);         
+        
+            const linha = document.createElement('div');
+            linha.classList.add('row', "mt-2");
+            const botoesLinha = document.createElement('div');
+            botoesLinha.classList.add('d-grid', 'gap-2', 'd-md-flex',  'justify-content-md-end');
+
+            const voltar = document.createElement('button');
+            voltar.setAttribute('type', 'submit');
+            voltar.classList.add('btn', 'btn-primary', "justify-content-md-end");
+            voltar.innerText = 'Voltar';
+            voltar.addEventListener('click', function (event) {
+                event.preventDefault()
+                apagarConteudoElemento(aplicacao);
+                CarregarPagina(arrayExistente,paginaAtual, totalDe);
+            })
+            botoesLinha.append(voltar);
+
+            const enviar = document.createElement('button');
+            enviar.setAttribute('type', 'submit');
+            enviar.classList.add('btn', 'btn-primary', "justify-content-md-end");
+            enviar.innerText = 'Enviar';
+            enviar.addEventListener('click', function (event) {
+                event.preventDefault()
+                for (let index = 0; index < arrayExistente.length; index++) {
+                    if(arrayExistente[index] === element){
+                        arrayExistente[index] = {
+                            ...arrayExistente[index],
+                            name:document.getElementById('nome').value,
+                            gender: document.getElementById('genero').value,
+                            eye_color: document.getElementById('olhos').value,
+                            skin_color: document.getElementById('pele').value,
+                            hair_color: document.getElementById('cabelo').value,
+                            height:  document.getElementById('altura').value,
+                        
+                        }
+                    };
+                }
+                apagarConteudoElemento(aplicacao);
+                CarregarPagina(arrayExistente,paginaAtual, totalDe);
+            })
+            botoesLinha.append(enviar);
+            linha.append(botoesLinha)
+            
+            form.append(linha);
+            container.append(form);
+            aplicacao.append(container);
+
+        }
         
         const row = document.createElement('div');
         row.classList.add('row');
